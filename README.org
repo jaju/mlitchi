@@ -1,6 +1,6 @@
 #+title: M.Litchi - To scratch that ML itch sweetly.
 
-* MLitchi
+* M.Litchi
 #+begin_quote
 Scratchiing your ML itch
 #+end_quote
