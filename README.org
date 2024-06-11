@@ -1,11 +1,11 @@
-#+title: MLitchi - To scratch that ML itch sweetly.
+#+title: M.Litchi - To scratch that ML itch sweetly.
 
 * MLitchi
 #+begin_quote
-__Scratchiing__ your ML itch
+Scratchiing your ML itch
 #+end_quote
 
-the logo signifies the power of ML. Hallucinating both logos as well as spellings. We'll stick with this, to keep reminding us of that itch continuously, asymptotically reaching our goal of the AGI, while never touching it maybe...
+the logo signifies the power of ML. Hallucinating both logo as well as spelling. One on request, and another against wish. We'll stick with this, to keep reminding us of that itch continuously, asymptotically reaching our goal of the AGI, while never touching it maybe...
 
 [[file:docs/mlitchi.png]]
 
