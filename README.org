@@ -8,3 +8,47 @@ __Scratchiing__ your ML itch
 the logo signifies the power of ML. Hallucinating both logos as well as spellings. We'll stick with this, to keep reminding us of that itch continuously, asymptotically reaching our goal of the AGI, while never touching it maybe...
 
 [[file:docs/mlitchi.png]]
+
+* Prep Steps
+- [ ] Install Python
+- [ ] Install Clojure
+- [ ] Install poetry
+- [ ] Run poetry update
+- [ ] Run spacy download en_core_web_sm
+
+* Details
+This is a WIP section.
+
+A key purpose of this codebase/repository is to enable exploratory coding, and for me no other environment comes closer to what Clojure provides. Using [[https://babashka.org/][babashka]]'s nifty [[https://github.com/babashka/pods][pod]] system, and Python's reach in the ML world, I am looking to make the Clojure experience a tad bit useful in this space.
+
+Here's code from [[file:src/mlitchi/core.clj][mlitchi/core.clj]].
+#+begin_src clojure
+
+(ns mlitchi.core
+  (:require [babashka.pods :as pods]))
+
+(def pod-file "./mlitchi/pod.py")
+
+(defn load-pod []
+  (pods/load-pod pod-file)
+  (require 'py.hf-api))
+
+(defn unload-pod []
+  (pods/unload-pod pod-file))
+
+(comment
+
+  (unload-pod)
+  (load-pod)
+
+  (py.hf-api/repo-type-and-id-from-hf-id "facebook/bart-large")
+  (py.hf-api/hf-hub-url "facebook/bart-large" "config.json")
+
+  (->> "I am going to Mumbai this Saturday."
+       py.spacy/nlp
+       :entities
+       (map (fn [{:keys [text label]}] [text label])))
+)
+#+end_src
+
+See file [[file:mlitchi/pod.py][pod.py]] for how the pod script sets up the exports, using [[https://github.com/jaju/pylaagu][Py.Laagu]].

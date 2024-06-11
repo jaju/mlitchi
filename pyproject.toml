@@ -9,6 +9,9 @@ readme = "README.md"
 python = "^3.11"
 pylaagu = {git = "https://github.com/jaju/pylaagu.git"}
 huggingface-hub = "^0.23.3"
+bcoding = "^1.5"
+spacy = "^3.7.5"
+jsonpickle = "^3.2.1"
 
 
 [build-system]
