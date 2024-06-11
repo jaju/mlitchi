@@ -53,4 +53,24 @@ Here's code from [[file:src/mlitchi/core.clj][mlitchi/core.clj]].
   )
 #+end_src
 
+Here's output during a REPL session
+#+begin_src clojure
+(reload-pod pod-file)
+=> #:pod{:id "py.mlitchi"}
+(->> "I am going to Navi Mumbai in my car this Sunday."
+       py.spacy/nlp-noun-chunks)
+=>
+{:noun_chunks [{:text "I", :root "I", :root_dep "nsubj", :root_head "going"}
+               {:text "Navi Mumbai", :root "Mumbai", :root_dep "pobj", :root_head "to"}
+               {:text "my car", :root "car", :root_dep "pobj", :root_head "in"}]}
+(reload-pod pod-file)
+=> #:pod{:id "py.mlitchi"}
+(->> "I am going to Navi Mumbai in my car this Sunday."
+       py.spacy/nlp-noun-chunks)
+=>
+[{:text "I", :root "I", :root_dep "nsubj", :root_head "going"}
+ {:text "Navi Mumbai", :root "Mumbai", :root_dep "pobj", :root_head "to"}
+ {:text "my car", :root "car", :root_dep "pobj", :root_head "in"}]
+#+end_src
+
 See file [[file:mlitchi/pod.py][pod.py]] for how the pod script sets up the exports, using [[https://github.com/jaju/pylaagu][Py.Laagu]].
