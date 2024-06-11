@@ -60,6 +60,21 @@ def doc_to_full_json(doc: spacy.tokens.doc.Doc):
     return json_doc
 
 
+def noun_chunks_to_json(doc: spacy.tokens.doc.Doc):
+    json_doc = []
+    for chunk in doc.noun_chunks:
+        json_doc.append({
+            "text": chunk.text,
+            "root": chunk.root.text,
+            "root_dep": chunk.root.dep_,
+            "root_head": chunk.root.head.text
+        })
+    return json_doc
+
 # Convert a spacy object to a python dictionary
 def nlp(args):
     return doc_to_full_json(_nlp(args))
+
+
+def nlp_noun_chunks(args):
+    return noun_chunks_to_json(_nlp(args))
