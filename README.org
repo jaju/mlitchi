@@ -53,7 +53,8 @@ Here's code from [[file:src/mlitchi/core.clj][mlitchi/core.clj]].
   )
 #+end_src
 
-Here's output during a REPL session
+Here's output during a REPL session. The python code was updated, and the pod reloaded. You can see the updated returned structure from the `py.spacy/nlp-noun-chunks` function call.
+
 #+begin_src clojure
 (reload-pod pod-file)
 => #:pod{:id "py.mlitchi"}
