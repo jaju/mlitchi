@@ -10,10 +10,11 @@ python = "^3.11"
 pylaagu = {git = "https://github.com/jaju/pylaagu.git"}
 huggingface-hub = "^0.23.3"
 bcoding = "^1.5"
-spacy = "^3.7.5"
-jsonpickle = "^3.2.1"
-transformers = "^4.41.2"
-torch = "^2.3.1"
+spacy = "^3.7.6"
+jsonpickle = "^3.3.0"
+transformers = "^4.44.2"
+torch = "^2.4.1"
+mlx-lm = {version = "^0.18.2", platform = "darwin"}
 
 
 [build-system]
