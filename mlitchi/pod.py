@@ -18,21 +18,11 @@ def write(obj):
     sys.stdout.buffer.flush()
 
 
-nsexport_specs = [
-    NSExportSpec("mlitchi", "mlitchi/__init__.py", ns_name="py.mlitchi"),
-    NSExportSpec("mlitchi.hf", "mlitchi/hf.py", ns_name="py.hf", export_meta=True),
-    NSExportSpec("mlitchi.spacy_helpers", "mlitchi/spacy_helpers.py", ns_name="py.spacy"),
-    NSExportSpec("huggingface_hub.hf_api", ns_name="py.hf-api", export_module_imports=True)]
-
-
-def main(nsexport_specs: list[NSExportSpec] = nsexport_specs):
+def main(nsexport_specs: list[NSExportSpec]):
     namespaces = load_namespaces(nsexport_specs)
     exports = [to_pod_namespaced_format(ns)
-               for ns in namespaces.values()]
-    exports.append({"name": "pylaagu.babumoshai", "vars": [
-        {"name": "load-namespace"}
-    ]})
-    debug(exports)
+               for ns in namespaces.values()
+               if ns is not None]
     while True:
         try:
             msg = read()
@@ -47,16 +37,9 @@ def main(nsexport_specs: list[NSExportSpec] = nsexport_specs):
                 var = msg.get("var")
                 id = msg.get("id")
                 args = json.loads(msg.get("args"))
-                if var == "pylaagu.babumoshai/load-namespace":
-                    ns = load_namespace(NSExportSpec(*args))
-                    debug(ns)
-                    exports.append(to_pod_namespaced_format(ns))
-                    debug(exports)
-                    write({"status": ["done"], "id": id, "format": "json", "namespaces": exports})
-                else:
-                    value = dispatch(namespaces, var, args)
-                    write({"status": ["done"], "id": id,
-                           "value": json.dumps(value)})
+                value = dispatch(namespaces, var, args)
+                write({"status": ["done"], "id": id,
+                       "value": json.dumps(value)})
             elif op == "shutdown":
                 debug("Shutting down pod.")
                 break
@@ -68,9 +51,23 @@ def main(nsexport_specs: list[NSExportSpec] = nsexport_specs):
             write({"status": ["error"], "ex-message": str(e), "id": msg.get("id")})
 
 
+nsexport_specs = [
+    NSExportSpec("mlitchi", "mlitchi/__init__.py", ns_name="py.mlitchi"),
+    NSExportSpec("mlitchi.hfhub", "mlitchi/hfhub_helpers.py", ns_name="py.hfhub",
+                 export_meta=True, fail_on_error=True),
+    NSExportSpec("mlitchi.mlx", "mlitchi/mlx_helpers.py", ns_name="py.mlx",
+                 export_meta=True, fail_on_error=False),
+    NSExportSpec("mlitchi.spacy_helpers", "mlitchi/spacy_helpers.py",
+                 ns_name="py.spacy"),
+    NSExportSpec("mlitchi.transformers_helpers", "mlitchi/transformers_helpers.py",
+                 ns_name="py.transformers"),
+    NSExportSpec("huggingface_hub.hf_api", ns_name="py.hfhub-api",
+                 export_module_imports=True)]
+
+
 if __name__ == "__main__":
     if len(sys.argv) == 1:
-        main()
+        main(nsexport_specs)
     else:
         module = sys.argv[1]
         print(load_namespace(NSExportSpec(module)))

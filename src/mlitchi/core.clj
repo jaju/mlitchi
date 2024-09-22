@@ -17,8 +17,10 @@
 
   (reload-pod pod-file)
 
-  (py.hf-api/repo-type-and-id-from-hf-id "facebook/bart-large")
-  (py.hf-api/hf-hub-url "facebook/bart-large" "config.json")
+  (py.hfhub-api/repo-type-and-id-from-hf-id "facebook/bart-large")
+  (py.hfhub-api/hf-hub-url "facebook/bart-large" "config.json")
+
+  (py.transformers/get-device)
 
   (->> "I am going to Mumbai this Saturday."
        py.spacy/nlp)

@@ -1,7 +1,6 @@
 import jsonpickle
-import mlitchi.cache
+import mlitchi.cache as cache
 
 appname = 'org.msync.mlitchi'
-jsonpickle.set_encoder_options('json',
-                               use_decimal=True, sort_keys=True)
-mlitchi.cache.init_app(appname)
+jsonpickle.set_encoder_options('json', use_decimal=True, sort_keys=True)
+cache.init_app(appname)
