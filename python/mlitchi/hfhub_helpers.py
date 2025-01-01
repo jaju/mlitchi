@@ -8,7 +8,7 @@ def url_of(model_name: str, filename: str) -> str:
 
 
 @diskcache
-def model_info(model_name: str, as_json=True) -> dict | str:
+def model_info(model_name: str, as_json=False) -> dict | str:
     """Returns model metadata from huggingface."""
     info = hub.model_info(model_name)
     if as_json:

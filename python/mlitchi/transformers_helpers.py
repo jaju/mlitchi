@@ -35,6 +35,7 @@ def _load_model_and_tokenizer(model_name, device=__device):
 
 # Public APIs
 def load_model_and_tokenizer(model_name):
+    "Loads a model and tokenizer from Hugging Face model hub."
     global __model, __tokenizer
     __model, __tokenizer = _load_model_and_tokenizer(model_name)
     return True

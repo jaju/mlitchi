@@ -8,13 +8,13 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 pylaagu = {git = "https://github.com/jaju/pylaagu.git"}
-huggingface-hub = "^0.23.3"
+huggingface-hub = "^0.25.2"
 bcoding = "^1.5"
-spacy = "^3.7.6"
+spacy = "^3.8.2"
 jsonpickle = "^3.3.0"
-transformers = "^4.44.2"
-torch = "^2.4.1"
-mlx-lm = {version = "^0.18.2", platform = "darwin"}
+transformers = "^4.46.2"
+torch = "^2.5.1"
+mlx-lm = {version = "^0.20.0", platform = "darwin"}
 
 
 [build-system]
