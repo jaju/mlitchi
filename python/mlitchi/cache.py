@@ -10,7 +10,7 @@ __conn = None
 memoize_store = {}
 
 
-def cache_get(key):
+def cache_get(key) -> object:
     cursor = __conn.cursor()
     cursor.execute("SELECT value FROM cache WHERE key=?", (key,))
     row = cursor.fetchone()
@@ -19,7 +19,7 @@ def cache_get(key):
     return None
 
 
-def cache_set(key, value):
+def cache_set(key, value: object):
     cursor = __conn.cursor()
     cursor.execute("INSERT OR REPLACE INTO cache (key, value) VALUES (?, ?)",
                    (key, jsonpickle.encode(value)))
@@ -29,7 +29,7 @@ def cache_set(key, value):
 # Thanks to https://stackoverflow.com/a/815160/1330548
 # for the decorator idea
 
-def init_app(name):
+def init_app(name) -> None:
     global __appname
     global __cachedir
     global __conn
@@ -42,13 +42,13 @@ def init_app(name):
                             " (key TEXT PRIMARY KEY, value TEXT)")
 
 
-def appname():
+def appname() -> str|None:
     if not __appname:
         raise ValueError("Appname not set")
     return __appname
 
 
-def diskcache(f):
+def diskcache(f) -> callable:
     def wrapper(*args, **kwargs):
         key = jsonpickle.encode(args, kwargs)
         value = cache_get(key)
