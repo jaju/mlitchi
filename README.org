@@ -21,6 +21,10 @@ This is a WIP section.
 
 A key purpose of this codebase/repository is to enable exploratory coding, and for me no other environment comes closer to what Clojure provides. Using [[https://babashka.org/][babashka]]'s nifty [[https://github.com/babashka/pods][pod]] system, and Python's reach in the ML world, I am looking to make the Clojure experience a tad bit useful in this space.
 
+#+begin_src bash
+clojure -M:dev
+#+end_src
+
 Here's code from [[file:src/mlitchi/core.clj][mlitchi/core.clj]].
 #+begin_src clojure
 (ns mlitchi.core
