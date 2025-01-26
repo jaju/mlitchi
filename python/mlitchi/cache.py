@@ -7,7 +7,6 @@ from platformdirs import user_cache_dir
 __appname = None
 __cachedir = None
 __conn = None
-memoize_store = {}
 
 
 def cache_get(key) -> object:

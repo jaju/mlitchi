@@ -10,18 +10,18 @@ from pylaagu.babumoshai import (NSExportSpec,
 from pylaagu.utils import debug
 import logging
 
-logging.basicConfig(level=logging.INFO, filename="pod.log")
-logger = logging.getLogger(__name__)
-
+# Update system path
 script_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, f"{script_dir}")
+
+# Setup logging
+logging.basicConfig(level=logging.INFO, filename="pod.log")
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 fh = logging.FileHandler('pod.log')
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
 
-logger.info("Starting up pod...")
 
 def read():
     return dict(bdecode(sys.stdin.buffer))
@@ -82,6 +82,8 @@ nsexport_specs = [
                  export_module_imports=True, export_meta=False)
 ]
 
+# Announce...
+logger.info("Starting up pod...")
 
 if __name__ == "__main__":
     if len(sys.argv) == 1:

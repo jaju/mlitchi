@@ -1,0 +1,9 @@
+{
+ :pod-file  "../python/pod.py"
+ :http-port 8181
+
+ :openai {
+          :type "deepseek"
+          :api-key #env DEEPSEEK_API_KEY
+          }
+ }

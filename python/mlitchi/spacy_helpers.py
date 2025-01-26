@@ -78,3 +78,7 @@ def nlp(args):
 
 def nlp_noun_chunks(args):
     return noun_chunks_to_json(_nlp(args))
+
+
+if __name__ == "__main__":
+    print(nlp("Pune is my home town."))

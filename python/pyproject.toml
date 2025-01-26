@@ -4,19 +4,22 @@ version = "0.1.0"
 description = ""
 readme = "README.md"
 authors = ["Ravindra Jaju <jaju@msync.org>"]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dependencies = [
     "bcoding>=1.5",
     "huggingface-hub>=0.27.0",
     "jsonpickle>=4.0.1",
-    "mlx-lm>=0.20.6",
-    "pip>=24.3.1",
+    "loguru>=0.7.3",
+    "mlx-lm>=0.21.1",
+    "openai>=1.60.1",
+    "pip>=25.0",
     "platformdirs>=4.3.6",
     "pylaagu",
-    "spacy>=3.8.3",
+    "spacy>=3.8.4",
     "torch>=2.5.1",
-    "transformers>=4.47.1",
+    "transformers>=4.48.1",
 ]
 
 [tool.uv.sources]
 pylaagu = { git = "https://github.com/jaju/pylaagu.git" }
+en_core_web_sm = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" }

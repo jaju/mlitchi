@@ -1,44 +1,37 @@
 (ns mlitchi.core
-  (:require [babashka.pods :as pods]))
+  (:require [babashka.pods :as pods]
+            [clojure.tools.cli :as cli]
+            [mount.core :refer [defstate]]
+            [mlitchi.config :as mlitchi-config]))
 
-(def pod-file "../python/pod.py")
-
-(defn load-pod [pod-file]
+(defn- load-pod [pod-file]
+  (println "Loading pod file...")
   (pods/load-pod pod-file))
 
-(defn unload-pod [pod-file]
-  (pods/unload-pod pod-file))
+(defn- unload-pod [pod-id]
+  (pods/unload-pod pod-id))
 
-(defn reload-pod [pod-file]
-  (unload-pod pod-file)
-  (load-pod pod-file))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(comment
+(defstate core-state
+          :start (load-pod (mlitchi-config/pod-file))
+          :stop (unload-pod core-state))
 
-  (reload-pod pod-file)
+(def cli-options
+  [["-c" "--config-file FILE" "configuration file in EDN format"
+    :default "mlitchi-config.edn"]])
 
-  (ns-interns 'py.transformers)
-  (ns-interns 'py.hfhub)
-  (ns-interns 'py.hfhub-api)
-  (ns-interns 'py.mlitchi)
+(defn- init! [& [config-file]]
+  (if config-file
+    (mlitchi-config/load-config! config-file)
+    (mlitchi-config/load-config!))
+  (mount.core/start))
 
-  (py.hfhub-api/repo-type-and-id-from-hf-id "facebook/bart-large")
-  (py.hfhub-api/hf-hub-url "facebook/bart-large" "config.json")
-  (require '[clojure.repl :refer [doc]])
-  (doc py.hfhub-api/hf-hub-url)
-  (doc py.hfhub-api/repo-type-and-id-from-hf-id)
-  (doc py.transformers/load-model-and-tokenizer)
-
-
-  (py.transformers/get-device)
-  (py.hfhub/url-of "facebook/bart-large" "config.json")
-  (py.hfhub/model-info "facebook/bart-large" true)
-
-  (def ^Boolean result (py.transformers/load-model-and-tokenizer "facebook/bart-large"))
-
-  (->> "I am going to Mumbai this Saturday."
-       py.spacy/nlp)
-
-  (->> "I am going to Navi Mumbai in my car this Sunday."
-       py.spacy/nlp-noun-chunks)
-  )
+;; Dormant function. To be evolved once I set up the jar packaging to run
+;; Until then, dev.clj is the entry point to the application
+(defn -main [& args]
+  (let [opts (cli/parse-opts args cli-options)
+        options (:options opts)
+        {:keys [config-file]} options]
+    (init! config-file)))
