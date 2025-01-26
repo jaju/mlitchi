@@ -12,8 +12,8 @@ the logo signifies the power of ML. Hallucinating both logo as well as spelling.
 * Prep Steps
 - [ ] Install Python
 - [ ] Install Clojure
-- [ ] Install poetry
-- [ ] Run poetry update
+- [ ] Install uv
+- [ ] Run uv sync
 - [ ] Run spacy download en_core_web_sm
 
 * Details
@@ -22,60 +22,73 @@ This is a WIP section.
 A key purpose of this codebase/repository is to enable exploratory coding, and for me no other environment comes closer to what Clojure provides. Using [[https://babashka.org/][babashka]]'s nifty [[https://github.com/babashka/pods][pod]] system, and Python's reach in the ML world, I am looking to make the Clojure experience a tad bit useful in this space.
 
 #+begin_src bash
-clojure -M:dev
+# Use -i to get a REPL in the terminal
+clojure -M:dev [-i]
 #+end_src
 
 Here's code from [[file:src/mlitchi/core.clj][mlitchi/core.clj]].
 #+begin_src clojure
 (ns mlitchi.core
-  (:require [babashka.pods :as pods]))
+  (:require [babashka.pods :as pods]
+            [clojure.tools.cli :as cli]
+            [mount.core :refer [defstate]]
+            [mlitchi.config :as mlitchi-config]
+            [mlitchi.deepseek :as deepseek]))
 
-(def pod-file "./mlitchi/pod.py")
-
-(defn load-pod [pod-file]
+(defn- load-pod [pod-file]
+  (println "Loading pod file...")
   (pods/load-pod pod-file))
 
-(defn unload-pod [pod-file]
-  (pods/unload-pod pod-file))
+(defn- unload-pod [pod-id]
+  (pods/unload-pod pod-id))
 
-(defn reload-pod [pod-file]
-  (unload-pod pod-file)
-  (load-pod pod-file))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(comment
+(defstate core-state
+          :start (load-pod (mlitchi-config/pod-file))
+          :stop (unload-pod core-state))
 
-  (reload-pod pod-file)
+(def cli-options
+  [["-c" "--config-file FILE" "configuration file in EDN format"
+    :default "mlitchi-config.edn"]])
 
-  (py.hf-api/repo-type-and-id-from-hf-id "facebook/bart-large")
-  (py.hf-api/hf-hub-url "facebook/bart-large" "config.json")
+(defn- init! [& [config-file]]
+  (if config-file
+    (mlitchi-config/load-config! config-file)
+    (mlitchi-config/load-config!))
+  (deepseek/api-key! (-> (mlitchi-config/config) :openai :api-key))
+  (mount.core/start))
 
-  (->> "I am going to Mumbai this Saturday."
-       py.spacy/nlp)
-
-  (->> "I am going to Navi Mumbai in my car this Sunday."
-       py.spacy/nlp-noun-chunks)
-  )
+;; Dormant function. To be evolved once I set up the jar packaging to run
+;; Until then, dev.clj is the entry point to the application
+(defn -main [& args]
+  (let [opts (cli/parse-opts args cli-options)
+        options (:options opts)
+        {:keys [config-file]} options]
+    (init! config-file)))
 #+end_src
 
 Here's output during a REPL session. The python code was updated, and the pod reloaded. You can see the updated returned structure from the `py.spacy/nlp-noun-chunks` function call.
 
 #+begin_src clojure
-(reload-pod pod-file)
-=> #:pod{:id "py.mlitchi"}
 (->> "I am going to Navi Mumbai in my car this Sunday."
        py.spacy/nlp-noun-chunks)
-=>
+; =>
 {:noun_chunks [{:text "I", :root "I", :root_dep "nsubj", :root_head "going"}
                {:text "Navi Mumbai", :root "Mumbai", :root_dep "pobj", :root_head "to"}
                {:text "my car", :root "car", :root_dep "pobj", :root_head "in"}]}
-(reload-pod pod-file)
-=> #:pod{:id "py.mlitchi"}
+
 (->> "I am going to Navi Mumbai in my car this Sunday."
        py.spacy/nlp-noun-chunks)
-=>
+; =>
 [{:text "I", :root "I", :root_dep "nsubj", :root_head "going"}
  {:text "Navi Mumbai", :root "Mumbai", :root_dep "pobj", :root_head "to"}
  {:text "my car", :root "car", :root_dep "pobj", :root_head "in"}]
 #+end_src
+
+#+RESULTS:
+: [{:text "I" (\, :root) "I" (\, :root_dep) "nsubj" (\, :root_head) "going" } {:text "Navi Mumbai" (\, :root) "Mumbai" (\, :root_dep) "pobj" (\, :root_head) "to" } {:text "my car" (\, :root) "car" (\, :root_dep) "pobj" (\, :root_head) "in" }]
+
 
 See file [[file:mlitchi/pod.py][pod.py]] for how the pod script sets up the exports, using [[https://github.com/jaju/pylaagu][Py.Laagu]].
