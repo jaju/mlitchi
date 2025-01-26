@@ -2,7 +2,8 @@
   (:require [babashka.pods :as pods]
             [clojure.tools.cli :as cli]
             [mount.core :refer [defstate]]
-            [mlitchi.config :as mlitchi-config]))
+            [mlitchi.config :as mlitchi-config]
+            [mlitchi.deepseek :as deepseek]))
 
 (defn- load-pod [pod-file]
   (println "Loading pod file...")
@@ -26,6 +27,7 @@
   (if config-file
     (mlitchi-config/load-config! config-file)
     (mlitchi-config/load-config!))
+  (deepseek/api-key! (-> (mlitchi-config/config) :openai :api-key))
   (mount.core/start))
 
 ;; Dormant function. To be evolved once I set up the jar packaging to run
