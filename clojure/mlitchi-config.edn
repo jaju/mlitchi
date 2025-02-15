@@ -2,8 +2,23 @@
  :pod-file  "../python/pod.py"
  :http-port 8181
 
- :openai {
-          :type "deepseek"
-          :api-key #env DEEPSEEK_API_KEY
-          }
+ :deepseek  {
+             :api-key #env DEEPSEEK_API_KEY
+             }
+
+ :gemini    {
+             :api-key #env GEMINI_API_KEY
+             }
+
+ :azure {
+         :api-key #env AZURE_OPENAI_API_KEY
+         :api-endpoint #env AZURE_OPENAI_API_ENDPOINT
+         }
+
+ :ollama    {
+             :url "http://127.0.0.1:11434"
+             }
+
+ :prompt-library "prompts.edn"
+
  }

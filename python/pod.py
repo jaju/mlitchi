@@ -10,6 +10,8 @@ from pylaagu.babumoshai import (NSExportSpec,
 from pylaagu.utils import debug
 import logging
 
+os.environ["ANONYMIZED_TELEMETRY"] = "false"
+
 # Update system path
 script_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, f"{script_dir}")

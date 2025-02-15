@@ -7,6 +7,8 @@ Scratchiing your ML itch
 
 the logo signifies the power of ML. Hallucinating both logo as well as spelling. One on request, and another against wish. We'll stick with this, to keep reminding us of that itch continuously, asymptotically reaching our goal of the AGI, while never touching it maybe...
 
+Caveat: This is an evolving code repository, and the purpose is finding some direction. Just saying...
+
 [[file:docs/mlitchi.png]]
 
 * Prep Steps

@@ -3,7 +3,10 @@
             [clojure.tools.cli :as cli]
             [mount.core :refer [defstate]]
             [mlitchi.config :as mlitchi-config]
-            [mlitchi.deepseek :as deepseek]))
+            [mlitchi.deepseek :as deepseek]
+            [mlitchi.gemini :as gemini]
+            [mlitchi.azure :as azure]
+            [mlitchi.ollama :as ollama]))
 
 (defn- load-pod [pod-file]
   (println "Loading pod file...")
@@ -16,8 +19,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defstate core-state
-          :start (load-pod (mlitchi-config/pod-file))
-          :stop (unload-pod core-state))
+          :start (do
+                   (ollama/init-config! (mlitchi-config/ollama))
+                   (load-pod (mlitchi-config/pod-file)))
+          :stop (do
+                  (unload-pod core-state)))
 
 (def cli-options
   [["-c" "--config-file FILE" "configuration file in EDN format"
@@ -27,7 +33,13 @@
   (if config-file
     (mlitchi-config/load-config! config-file)
     (mlitchi-config/load-config!))
-  (deepseek/api-key! (-> (mlitchi-config/config) :openai :api-key))
+  (let [global-config (mlitchi-config/config)]
+    (if-let [deepseek-config (:deepseek global-config)]
+      (deepseek/api-key! (:api-key deepseek-config)))
+    (if-let [gemini-config (:gemini global-config)]
+      (gemini/api-key! (:api-key gemini-config)))
+    (if-let [azure-config (:azure global-config)]
+      (azure/init! azure-config)))
   (mount.core/start))
 
 ;; Dormant function. To be evolved once I set up the jar packaging to run
