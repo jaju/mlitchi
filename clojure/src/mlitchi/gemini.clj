@@ -1,7 +1,12 @@
 (ns mlitchi.gemini
   (:require [cheshire.core :as json]
             [hato.client :as http]
-            [mlitchi.config :as config])
+            [mlitchi.config :as config]
+            [mlitchi.gemini
+             [types :as types]
+             [helpers :as helpers]]
+            [mlitchi.protocols :refer [to-json]]
+            [mlitchi.jvm-utils :refer [declared-fields]])
   (:import [clojure.lang Reflector]
            [com.google.genai ApiClient Client Models HttpApiClient]))
 
@@ -15,7 +20,6 @@
 
 (defn- api-key [] @-api-key)
 (defn api-key! [k] (reset! -api-key k))
-
 
 (defn- ^Client create-client []
   (-> (Client/builder)
@@ -56,40 +60,10 @@
                 :headers {"Content-Type" "application/json"}
                 :body    (generate-chat-request-body system-prompt user-input history)})))
 
-(defn debug-fields [client]
-  (doseq [field (.getDeclaredFields (if (instance? Class client) client (class client)))]
-    (.setAccessible field true)
-    (println (.getName field))))
-
-(defn- get-private-field [object field & [clzz]]
-  (let [field (.getDeclaredField (or clzz (class object)) field)]
-    (.setAccessible field true)
-    (.get field object)))
-
-(defn get-api-client [client]
-  (let [field (.getDeclaredField (class client) "apiClient")]
-    (.setAccessible field true)
-    (.get field client)))
-
-
 (comment
   (defonce client (create-client))
-  (debug-fields client)
-  (debug-fields Client)
-  (def api-client (get-private-field client "apiClient"))
-  (class api-client)
-  (debug-fields api-client)
-  (.getDeclaredFields ApiClient)
-  (.getDeclaredFields HttpApiClient)
-  (debug-fields ApiClient)
-  (debug-fields ^ApiClient HttpApiClient)
-  (def http-options (get-private-field api-client "httpOptions" ApiClient))
-
-  (.get (.baseUrl http-options))
-  (-> http-options .baseUrl .get)
-  (-> http-options .headers .get)
-  (-> http-options .apiVersion .get)
-  (Reflector/getInstanceField client "apiClient")
-  (Reflector/getInstanceField client (name :apiClient))
+  (declared-fields Client)
+  (declared-fields client)
   (.models client)
+  (helpers/declared-fields client)
   )

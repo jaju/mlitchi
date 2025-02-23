@@ -1,4 +1,5 @@
 (ns mlitchi.gemini.types
+  (:require [mlitchi.protocols :refer [Jsonable to-json]])
   (:import [clojure.lang Reflector]
            [com.google.genai JsonSerializable]
            [com.google.genai.types
@@ -7,8 +8,6 @@
             Part
             SafetySetting]))
 
-(defprotocol Jsonable
-  (to-json [this]))
 (extend-protocol Jsonable
   JsonSerializable
   (to-json [^JsonSerializable this]
@@ -40,7 +39,8 @@
   (to-json
     (generation-config {}))
 
-  (to-json (content {:parts [(part {:text "Hello, world!"})
+  (to-json (content {:role "user"
+                     :parts [(part {:text "Hello, world!"})
                              (part {:text "How are you?"})]}))
 
   )

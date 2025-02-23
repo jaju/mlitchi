@@ -17,7 +17,7 @@ dependencies = [
     "langchain-openai>=0.3.1",
     "loguru>=0.7.3",
     "mlx-lm>=0.21.4",
-    "openai>=1.63.0",
+    "openai>=1.63.2",
     "pip>=25.0",
     "platformdirs>=4.3.6",
     "pylaagu",
@@ -25,7 +25,7 @@ dependencies = [
     "python-lsp-server>=1.12.2",
     "spacy>=3.8.4",
     "torch>=2.6.0",
-    "transformers>=4.48.3",
+    "transformers>=4.49.0",
 ]
 
 [tool.uv.sources]
