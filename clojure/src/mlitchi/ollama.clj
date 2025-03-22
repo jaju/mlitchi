@@ -23,7 +23,20 @@
 
   (def text2 "Tell me more about the SOLID principles.")
 
-  (generate
-    "hf.co/unsloth/DeepSeek-R1-Distill-Llama-8B-GGUF:Q4_K_M"
-    text2)
+  (def model 
+    "gemma3"
+    ; "hf.co/unsloth/DeepSeek-R1-Distill-Llama-8B-GGUF:Q4_K_M"
+    ; "qwq"
+    )
+
+  (def
+    result
+    (generate
+    model
+    text2))
+  (keys result)
+  (-> result
+      :body
+      (json/parse-string keyword)
+      :response)
   )

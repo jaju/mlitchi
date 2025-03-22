@@ -1,7 +1,9 @@
 (ns mlitchi.deepseek
   (:require [wkok.openai-clojure.api :as api]
             [hato.client :as hc]
-            [cheshire.core :as json]))
+            [cheshire.core :as json]
+            [nextjournal.markdown :as md]
+            [nextjournal.markdown.transform :as md.transform]))
 
 (defonce ^:private -base-url "https://api.deepseek.com")
 (defonce ^:private -beta-base-url "https://api.deepseek.com/beta")
@@ -119,7 +121,21 @@ The way you do it is, for any user-supplied text, you analyse it for the presenc
 OUTPUT: It should be pure, valid JSON ONLY."
       -model-chat))
 
-  (ne-extractor "I have been attending an online course on Machine Learning which focuses on the fundamental mathematics of ML. The lectures happen every Saturday at 7 PM, for 2 hours.")
+  (def response1
+    (ne-extractor "I have been attending an online course on Machine Learning which focuses on the fundamental mathematics of ML. The lectures happen every Saturday at 7 PM, for 2 hours."))
+
+  (keys response1)
+  (->> response1 
+       :choices 
+       first 
+       :message 
+       :content 
+       md/parse 
+       :content 
+       first 
+       :content 
+       (map (fn [n] (json/parse-string (:text n) keyword))) 
+       #_(json/parse-string keyword))
 
   (ne-extractor "uv synchronizes based on the pyproject.toml. By declaring en_core_web_sm explicitly as a dependency using its wheel URL, uv recognizes it and won’t uninstall it during syncs. This adheres to clean software process principles without relying on post-install hacks.")
 

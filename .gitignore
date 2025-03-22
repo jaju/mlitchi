@@ -1,8 +1,12 @@
 /poetry.lock
 /**/__pycache__/
-/.cpcache
+/**/.cpcache
+/**/.clj-kondo
+/**/.lsp
 /.dir-locals.el
 /.envrc
 /.idea
 .nrepl-port
 /*.iml
+/**/pod.log
+/**/uv.lock
